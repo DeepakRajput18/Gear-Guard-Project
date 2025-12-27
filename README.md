@@ -230,6 +230,9 @@ gearguard/              ← Main project folder (Django project)
 **Models Used**: MaintenanceRequest, MaintenanceTeam
 
 ---
+Screenshots
+
+   Signup page:[https://github.com/user-attachments/assets/6525ac02-7dd0-4151-8913-64baa9429630]
 
 ## 🚀 Getting Started
 
