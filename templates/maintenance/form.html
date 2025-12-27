@@ -1,0 +1,374 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - GearGuard{% endblock %}
+
+{% block page_header %}
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-{% if maintenance_request %}pencil{% else %}plus-circle{% endif %}"></i>
+                {{ title }}
+            </h1>
+            <p class="page-subtitle">{% if maintenance_request %}Edit maintenance request{% else %}Create a new maintenance request{% endif %}</p>
+        </div>
+        <a href="{% if maintenance_request %}{% url 'maintenance:detail' maintenance_request.pk %}{% else %}{% url 'maintenance:list' %}{% endif %}" 
+           class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Cancel
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    Request Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate id="maintenanceRequestForm">
+                    {% csrf_token %}
+                    
+                    {# Display form errors #}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Please correct the following errors:</strong>
+                            <ul class="mb-0 mt-2">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    
+                    {# Display field-level errors at top #}
+                    {% if form.errors %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Please correct the errors below:</strong>
+                            <ul class="mb-0 mt-2">
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li><strong>{{ field|title }}:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    
+                    {# Basic Information #}
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2 mb-3">Basic Information</h6>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.subject.id_for_label }}" class="form-label">
+                                {{ form.subject.label }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}
+                                <div class="text-danger small">{{ form.subject.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                {{ form.description.label }}
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {# Equipment & Team #}
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2 mb-3">Equipment & Team</h6>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.equipment.id_for_label }}" class="form-label">
+                                {{ form.equipment.label }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            {{ form.equipment }}
+                            {% if form.equipment.errors %}
+                                <div class="text-danger small">{{ form.equipment.errors.0 }}</div>
+                            {% endif %}
+                            {% if form.equipment.help_text %}
+                                <small class="form-text text-muted">{{ form.equipment.help_text }}</small>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.maintenance_team.id_for_label }}" class="form-label">
+                                {{ form.maintenance_team.label }}
+                            </label>
+                            {{ form.maintenance_team }}
+                            {% if form.maintenance_team.errors %}
+                                <div class="text-danger small">{{ form.maintenance_team.errors.0 }}</div>
+                            {% endif %}
+                            {% if form.maintenance_team.help_text %}
+                                <small class="form-text text-muted">{{ form.maintenance_team.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {# Type & Status #}
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2 mb-3">Type & Status</h6>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    {{ form.request_type.label }}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="mt-2">
+                                    {% for radio in form.request_type %}
+                                        <div class="form-check">
+                                            {{ radio.tag }}
+                                            <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                                {{ radio.choice_label }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% if form.request_type.errors %}
+                                    <div class="text-danger small">{{ form.request_type.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.request_type.help_text %}
+                                    <small class="form-text text-muted">{{ form.request_type.help_text }}</small>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.status.id_for_label }}" class="form-label">
+                                    {{ form.status.label }}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                    <div class="text-danger small">{{ form.status.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.priority.id_for_label }}" class="form-label">
+                                    {{ form.priority.label }}
+                                </label>
+                                {{ form.priority }}
+                                {% if form.priority.errors %}
+                                    <div class="text-danger small">{{ form.priority.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.priority.help_text %}
+                                    <small class="form-text text-muted">{{ form.priority.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {# Assignment & Scheduling #}
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2 mb-3">Assignment & Scheduling</h6>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.assigned_to.id_for_label }}" class="form-label">
+                                    {{ form.assigned_to.label }}
+                                </label>
+                                {{ form.assigned_to }}
+                                {% if form.assigned_to.errors %}
+                                    <div class="text-danger small">{{ form.assigned_to.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.assigned_to.help_text %}
+                                    <small class="form-text text-muted">{{ form.assigned_to.help_text }}</small>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.scheduled_date.id_for_label }}" class="form-label">
+                                    {{ form.scheduled_date.label }}
+                                </label>
+                                {{ form.scheduled_date }}
+                                {% if form.scheduled_date.errors %}
+                                    <div class="text-danger small">{{ form.scheduled_date.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.scheduled_date.help_text %}
+                                    <small class="form-text text-muted">{{ form.scheduled_date.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.due_date.id_for_label }}" class="form-label">
+                                    {{ form.due_date.label }}
+                                </label>
+                                {{ form.due_date }}
+                                {% if form.due_date.errors %}
+                                    <div class="text-danger small">{{ form.due_date.errors.0 }}</div>
+                                {% endif %}
+                                {% if form.due_date.help_text %}
+                                    <small class="form-text text-muted">{{ form.due_date.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {# Duration #}
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2 mb-3">Completion</h6>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.duration_hours.id_for_label }}" class="form-label">
+                                {{ form.duration_hours.label }}
+                            </label>
+                            {{ form.duration_hours }}
+                            {% if form.duration_hours.errors %}
+                                <div class="text-danger small">{{ form.duration_hours.errors.0 }}</div>
+                            {% endif %}
+                            {% if form.duration_hours.help_text %}
+                                <small class="form-text text-muted">{{ form.duration_hours.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {# Submit Buttons #}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% if maintenance_request %}{% url 'maintenance:detail' maintenance_request.pk %}{% else %}{% url 'maintenance:list' %}{% endif %}" 
+                           class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i>
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i>
+                            {% if maintenance_request %}Update Request{% else %}Create Request{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-fill maintenance team when equipment is selected and filter technicians based on team
+    document.addEventListener('DOMContentLoaded', function() {
+        const equipmentSelect = document.getElementById('id_equipment');
+        const teamSelect = document.getElementById('id_maintenance_team');
+        const assignedToSelect = document.getElementById('id_assigned_to');
+        const requestTypeRadios = document.querySelectorAll('input[name="request_type"]');
+        const scheduledDateField = document.getElementById('id_scheduled_date');
+        
+        // Function to update technician dropdown based on selected team (workflow logic)
+        function updateTechnicianDropdown(teamId) {
+            if (!assignedToSelect) return;
+            
+            // Clear current options except the first (empty) option
+            const currentValue = assignedToSelect.value;
+            assignedToSelect.innerHTML = '<option value="">Unassigned</option>';
+            
+            if (teamId) {
+                // Fetch team members via AJAX
+                fetch(`{% url 'maintenance:team_members_api' team_id=0 %}`.replace('0', teamId))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.members.length > 0) {
+                            data.members.forEach(member => {
+                                const option = document.createElement('option');
+                                option.value = member.id;
+                                option.textContent = member.full_name + ' (' + member.username + ')';
+                                assignedToSelect.appendChild(option);
+                            });
+                            // Try to restore previous selection if it's still valid
+                            if (currentValue) {
+                                assignedToSelect.value = currentValue;
+                                // If value wasn't restored (not in team), select first empty option
+                                if (!assignedToSelect.value) {
+                                    assignedToSelect.value = '';
+                                }
+                            }
+                        } else {
+                            // No team members found
+                            const option = document.createElement('option');
+                            option.value = '';
+                            option.textContent = 'No team members available';
+                            assignedToSelect.appendChild(option);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching team members:', error);
+                        // Show all users as fallback
+                        assignedToSelect.innerHTML = '<option value="">Error loading team members</option>';
+                    });
+            } else {
+                // No team selected - could show all users or leave empty
+                // For workflow logic, we keep it empty until team is selected
+                assignedToSelect.innerHTML = '<option value="">Select a team first</option>';
+            }
+        }
+        
+        // Auto-fill team from equipment and update technicians
+        if (equipmentSelect && teamSelect) {
+            equipmentSelect.addEventListener('change', function() {
+                const equipmentId = this.value;
+                if (equipmentId) {
+                    // This would ideally fetch equipment details via AJAX
+                    // For now, rely on server-side auto-fill on form submit
+                    // But we can trigger team change event if team field gets updated
+                }
+            });
+        }
+        
+        // Update technician dropdown when team changes (workflow logic implementation)
+        if (teamSelect && assignedToSelect) {
+            teamSelect.addEventListener('change', function() {
+                const teamId = this.value;
+                updateTechnicianDropdown(teamId);
+            });
+            
+            // Initial load: update technicians if team is already selected
+            if (teamSelect.value) {
+                updateTechnicianDropdown(teamSelect.value);
+            }
+        }
+        
+        // Show/hide scheduled_date based on request_type (for radio buttons)
+        if (requestTypeRadios.length > 0 && scheduledDateField) {
+            function toggleScheduledDate() {
+                const selectedRadio = document.querySelector('input[name="request_type"]:checked');
+                const requestType = selectedRadio ? selectedRadio.value : '';
+                const scheduledDateGroup = scheduledDateField.closest('.mb-3');
+                if (requestType === 'Preventive') {
+                    scheduledDateGroup.style.display = 'block';
+                    scheduledDateField.required = true;
+                } else {
+                    scheduledDateGroup.style.display = 'block'; // Keep visible but optional
+                    scheduledDateField.required = false;
+                }
+            }
+            
+            // Add event listener to each radio button
+            requestTypeRadios.forEach(radio => {
+                radio.addEventListener('change', toggleScheduledDate);
+            });
+            toggleScheduledDate(); // Initial check
+        }
+    });
+</script>
+{% endblock %}
+
+
