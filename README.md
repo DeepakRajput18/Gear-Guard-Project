@@ -230,9 +230,28 @@ gearguard/              ← Main project folder (Django project)
 **Models Used**: MaintenanceRequest, MaintenanceTeam
 
 ---
-Screenshots
+                                                                                                    Screenshots
+   
+   Signup page                                                      [https://github.com/user-attachments/assets/6525ac02-7dd0-4151-8913-64baa9429630]
+   Log in:                                                          [https://github.com/user-attachments/assets/68ad112c-56af-400d-9559-a7866df8cc6e]
+   Dashboard:                                                     1.[https://github.com/user-attachments/assets/a0ad6b2d-19e9-4f4a-bfc7-f2a6e46727f0]
+                                                                  2.[https://github.com/user-attachments/assets/78db77a5-3019-4918-9b74-ab22941ac4e7]
+                                                                  3.[https://github.com/user-attachments/assets/d209222f-3bab-4636-879c-97206fd4af0e]
+                                               
+   Equipment:                                                       [https://github.com/user-attachments/assets/46bfcaab-24ee-4306-a84d-0cf6815b5c8e]
+   Create/Add Equipment:                                            [https://github.com/user-attachments/assets/42d67901-e2e5-4ab5-943f-a6b1b7a106a8]
+   Equipment Categories:                                            [https://github.com/user-attachments/assets/1112f19f-c9ca-4b66-bf2a-f5ae6ae376c2]
+   Create Equipment Category:                                       [https://github.com/user-attachments/assets/dff1cbcd-af1e-4fe6-95be-aed78215b734]
+   Maintenance Requests:                                            [https://github.com/user-attachments/assets/7dbe1d6f-ec3e-41a3-879f-e9f6d0843a0e]
+   Create Maintenance Request:                                      [https://github.com/user-attachments/assets/aef0b4db-54dd-46e7-b2f0-75cfe998349e]
+   Kanban Board:                                                    [https://github.com/user-attachments/assets/b5ab9380-2d5f-4bae-9475-a70198743698]
+   Maintenance Calendar:                                            [https://github.com/user-attachments/assets/7e338a70-f52f-4abd-b378-feab40786071]
+   Work Order List:                                                 [https://github.com/user-attachments/assets/f983a513-2d29-4e4e-b560-36dc10cd3857]
+   Maintenance Teams:                                               [https://github.com/user-attachments/assets/8fe222a0-ac39-49e8-8027-25a26bc84886]
+   Admin panel:                                                     [https://github.com/user-attachments/assets/7066735a-9481-464d-9504-b4034e6d114d]
 
-   Signup page:[https://github.com/user-attachments/assets/6525ac02-7dd0-4151-8913-64baa9429630]
+
+
 
 ## 🚀 Getting Started
 
